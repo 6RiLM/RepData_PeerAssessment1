@@ -123,8 +123,28 @@ $(document).ready(function () {
 </div>
 
 
+<p>Below is the outcome of my work about the week no 2 of the course <strong>Reproductible Research</strong> on <a href="https://www.coursera.org/learn/reproducible-research">Coursera</a>. I hope this report will be readable enought. In any case, please tell me everything that sounds wrong to you in order to optimize my working method. Thankx</p>
 <div id="loading-and-preprocessing-the-data" class="section level2">
 <h2>Loading and preprocessing the data</h2>
+<p>Before load this dataset let’s first unzip the file in the archive. Data file were given on GitHub repository so we do not have to directly download it.</p>
+<pre class="r"><code>data.path &lt;- &quot;../../Data/Raw data/&quot;
+data.zipFile &lt;- paste(data.path, &quot;activity.zip&quot;, sep = &quot;&quot;)
+unzip(data.zipFile, exdir = data.path)</code></pre>
+<p>Then let’s have a look to this new dataset:</p>
+<pre class="r"><code>require(dplyr)
+require(data.table)
+require(lubridate)
+data &lt;- tbl_df(fread(paste(data.path, &quot;activity.csv&quot;, sep = &quot;&quot;))) %&gt;%
+    mutate(date = ymd(date))
+head(data, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   steps       date interval
+##   &lt;int&gt;     &lt;date&gt;    &lt;int&gt;
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10</code></pre>
+<pre class="r"><code>data.size &lt;- dim(data)</code></pre>
+<p>This dataset contains <strong>17568 records</strong> described by <strong>3 features</strong>.</p>
 </div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
 <h2>What is mean total number of steps taken per day?</h2>
@@ -134,6 +154,14 @@ $(document).ready(function () {
 </div>
 <div id="imputing-missing-values" class="section level2">
 <h2>Imputing missing values</h2>
+<pre class="r"><code>colSums(sapply(data, is.na))</code></pre>
+<pre><code>##    steps     date interval 
+##     2304        0        0</code></pre>
+<pre class="r"><code>str(data)</code></pre>
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Date, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...</code></pre>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>

@@ -7,8 +7,36 @@ output:
     keep_md: yes
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+Below is the outcome of my work about the week no 2 of the course **Reproductible Research** on [Coursera](https://www.coursera.org/learn/reproducible-research).
+I hope this report will be readable enought. In any case, please tell me everything that sounds wrong to you in order to optimize my working method. Thankx
 
 ## Loading and preprocessing the data
+
+Before load this dataset let's first unzip the file in the archive. Data file were given on GitHub repository so we do not have to directly download it.
+
+```{r unzip}
+data.path <- "../../Data/Raw data/"
+data.zipFile <- paste(data.path, "activity.zip", sep = "")
+unzip(data.zipFile, exdir = data.path)
+```
+
+Then let's have a look to this new dataset:  
+
+```{r loading}
+require(dplyr)
+require(data.table)
+require(lubridate)
+data <- tbl_df(fread(paste(data.path, "activity.csv", sep = ""))) %>%
+    mutate(date = ymd(date))
+head(data, 3)
+data.size <- dim(data)
+```
+
+This dataset contains **`r data.size[1]` records** described by **`r data.size[2]` features**.
 
 
 ## What is mean total number of steps taken per day?
@@ -21,6 +49,10 @@ output:
 
 ## Imputing missing values
 
+```{r}
+colSums(sapply(data, is.na))
+str(data)
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
