@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 Below is the outcome of my work about the week no 2 of the course **Reproductible Research** on [Coursera](https://www.coursera.org/learn/reproducible-research).
 I hope this report will be readable enought. In any case, please tell me everything that sounds wrong to you in order to optimize my working method. Thankx
 
+
+
 ## Loading and preprocessing the data
 
 Before load this dataset let's first unzip the file in the archive. Data file were given on GitHub repository so we do not have to directly download it.
@@ -26,32 +28,75 @@ unzip(data.zipFile, exdir = data.path)
 
 Then let's have a look to this new dataset:  
 
-```{r loading}
+```{r loading ans process}
 require(dplyr)
 require(data.table)
 require(lubridate)
+
 data <- tbl_df(fread(paste(data.path, "activity.csv", sep = ""))) %>%
     mutate(date = ymd(date))
+               
 head(data, 3)
-data.size <- dim(data)
 ```
 
-This dataset contains **`r data.size[1]` records** described by **`r data.size[2]` features**.
+This dataset contains **`r dim(data)[1]` records** described by **`r dim(data)[2]` features**.
+
 
 
 ## What is mean total number of steps taken per day?
+
+Let's plot an histogram of the total number of steps taken each day.
+```{r answer 1 plot}
+data <- group_by(data, date)
+summary <- summarize(data, total = sum(steps))
+
+require(ggplot2)
+
+fig <- ggplot(summary, aes(total)) +
+    geom_histogram(na.rm = T, bins = 15, aes(fill = ..count..)) + 
+    theme_minimal() +
+    ylab("Frequency") +
+    xlab(expression(paste("Total number of steps per day (", symbol("\306"), ")")))
+print(fig)
+```
+
+It seems that the average number of steps is close to 10'000. Let's calculate the mean and the median more accurately
+```{r answer 1 calculation}
+mean(summary$total, na.rm = T)
+median(summary$total, na.rm = T)
+```
+
+Then this dataset contains steps taken during **`r length(summary$date)` days** and the **mean number of steps taken each day for that period is about `r format(floor(mean(summary$total, na.rm = T)), digits = 5)`**.
 
 
 
 ## What is the average daily activity pattern?
 
+Let's now have a look to the mean of the number of steps taken accross all days.
+```{r answer 2 process and plot}
+data <- group_by(data, interval)
+summary <- summarize(data, mean = mean(steps, na.rm = T))
+max <- with(summary, interval[mean == max(mean)])
 
+fig <- ggplot(summary, aes(interval, mean)) +
+    geom_line() +
+    theme_minimal() +
+    geom_text(size = 7,
+              aes(label = max),
+              x = max + 150,
+              y = max(summary$mean)) +
+    xlab(expression(paste("Identifier of interval in day (", symbol("\306"), ")"))) + 
+    ylab(expression(paste("Mean number of steps per interval (", symbol("\306"), ")")))
+print(fig)
+```
+
+Then, as we can see on the picture above, the interval in which the mean number of step is at its maximum is `r with(summary, interval[mean == max(mean)])`. **So, this corresponds to the 5-minute interval after `r paste(floor(max/100), max %% 100, sep = ":")`**.
 
 ## Imputing missing values
 
 ```{r}
 colSums(sapply(data, is.na))
-str(data)
+# str(data)
 ```
 
 
