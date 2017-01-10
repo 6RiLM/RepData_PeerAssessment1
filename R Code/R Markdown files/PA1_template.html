@@ -172,7 +172,7 @@ print(fig)</code></pre>
 <div id="what-is-the-average-daily-activity-pattern" class="section level2">
 <h2>What is the average daily activity pattern?</h2>
 <p>Let’s now have a look to the mean of the number of steps taken accross all days.</p>
-<pre class="r"><code>data &lt;- group_by(data, interval)
+<pre class="r"><code>data &lt;- ungroup(data) %&gt;% group_by(interval)
 summary &lt;- summarize(data, mean = mean(steps, na.rm = T))
 max &lt;- with(summary, interval[mean == max(mean)])
 
@@ -195,7 +195,8 @@ print(fig)</code></pre>
 <pre class="r"><code>colSums(sapply(data, is.na))</code></pre>
 <pre><code>##    steps     date interval 
 ##     2304        0        0</code></pre>
-<pre class="r"><code># str(data)</code></pre>
+<p>In order to fill missing data, I will set value to the median for the 5-minute interval concerned through the full period. I am going to group data by <code>interval</code> then I will compute median value for each group and store the result in a variable. Finally, I will fill every missing value to the median which corresponds.</p>
+<pre class="r"><code>mem.median &lt;- summarize(data, medianSteps = median(steps, na.rm = T))</code></pre>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>

@@ -74,7 +74,7 @@ Then this dataset contains steps taken during **`r length(summary$date)` days** 
 
 Let's now have a look to the mean of the number of steps taken accross all days.
 ```{r answer 2 process and plot}
-data <- group_by(data, interval)
+data <- group_by(interval)
 summary <- summarize(data, mean = mean(steps, na.rm = T))
 max <- with(summary, interval[mean == max(mean)])
 
@@ -95,9 +95,14 @@ Then, as we can see on the picture above, the interval in which the mean number 
 ## Imputing missing values
 
 Let's see how many NA we have for each feature in this dataset.
-```{r}
+```{r NA table count}
 colSums(sapply(data, is.na))
-# str(data)
+```
+
+In order to fill missing data, I will set value to the median for the 5-minute interval concerned through the full period. I am going to group data by `interval` then I will compute median value for each group and store the result in a variable. Finally, I will fill every missing value to the median which corresponds.
+
+```{r NA management}
+mem.median <- summarize(data, medianSteps = median(steps, na.rm = T))
 ```
 
 

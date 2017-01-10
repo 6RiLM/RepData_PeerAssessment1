@@ -94,7 +94,7 @@ Then this dataset contains steps taken during **61 days** and the **mean number 
 Let's now have a look to the mean of the number of steps taken accross all days.
 
 ```r
-data <- group_by(data, interval)
+data <- ungroup(data) %>% group_by(interval)
 summary <- summarize(data, mean = mean(steps, na.rm = T))
 max <- with(summary, interval[mean == max(mean)])
 
@@ -127,8 +127,11 @@ colSums(sapply(data, is.na))
 ##     2304        0        0
 ```
 
+In order to fill missing data, I will set value to the median for the 5-minute interval concerned through the full period. I am going to group data by `interval` then I will compute median value for each group and store the result in a variable. Finally, I will fill every missing value to the median which corresponds.
+
+
 ```r
-# str(data)
+mem.median <- summarize(data, medianSteps = median(steps, na.rm = T))
 ```
 
 
