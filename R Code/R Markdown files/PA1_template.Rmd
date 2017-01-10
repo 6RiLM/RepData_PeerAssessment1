@@ -90,10 +90,11 @@ fig <- ggplot(summary, aes(interval, mean)) +
 print(fig)
 ```
 
-Then, as we can see on the picture above, the interval in which the mean number of step is at its maximum is `r with(summary, interval[mean == max(mean)])`. **So, this corresponds to the 5-minute interval after `r paste(floor(max/100), max %% 100, sep = ":")`**.
+Then, as we can see on the picture above, the interval in which the mean number of step is at its maximum is `r with(summary, interval[mean == max(mean)])`. **So, this corresponds to the 5-minute interval after `r paste(floor(max/100), max %% 100, sep = ":")` AM**.
 
 ## Imputing missing values
 
+Let's see how many NA we have for each feature in this dataset.
 ```{r}
 colSums(sapply(data, is.na))
 # str(data)

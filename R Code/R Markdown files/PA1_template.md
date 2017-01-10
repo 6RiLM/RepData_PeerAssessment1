@@ -112,10 +112,11 @@ print(fig)
 
 ![](PA1_template_files/figure-html/answer 2 process and plot-1.png)<!-- -->
 
-Then, as we can see on the picture above, the interval in which the mean number of step is at its maximum is 835. **So, this corresponds to the 5-minute interval after 8:35**.
+Then, as we can see on the picture above, the interval in which the mean number of step is at its maximum is 835. **So, this corresponds to the 5-minute interval after 8:35 AM**.
 
 ## Imputing missing values
 
+Let's see how many NA we have for each feature in this dataset.
 
 ```r
 colSums(sapply(data, is.na))
